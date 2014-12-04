@@ -1,0 +1,8 @@
+INSERT INTO admins (AdminID, Role)
+SELECT ID,users.Role FROM users,admins where 
+users.Role = 'Admin' 
+AND 
+users.ID <> admins.AdminID
+
+SELECT users.First_Name, users.Last_Name, faculty.facultyID, faculty.DepartmentCode 
+From users  INNER JOIN faculty on users.ID = faculty.facultyID

@@ -1,0 +1,49 @@
+<table id="viewEditSection" class="display" cellspacing="0" width="100%">
+		
+	    <thead>
+	        <tr>
+	            <th>CRN</th>
+	            <th>Course Number</th>
+	            <th>Department</th>
+	            <th>Course Title</th>
+	            <th>Time</th>
+	            <th>Days</th>
+	            <th>Location</th>
+	            <th>Faculty</th>
+	            <th>Max Enroll</th>
+	            <th>Cur Enroll</th>
+	            <th>Level</th>
+	         <!-- <th>View/Edit</th>-->
+	        </tr>
+	    </thead>
+	   <?php foreach($sectionBySem as $section) : ?>
+	    
+	    <tbody>
+	      	<tr>
+	      		<td><?php echo $section["CRN"];?></td>
+	      		<td><?php echo $section["CourseNUM"];?></td>
+	      		<td><?php echo $section["DepartmentCode"];?></td>
+	      		<td><?php echo $section["CourseTitle"];?></td>
+	      		<td><?php echo $section["Time"];?></td>
+	      		<td><?php echo $section["Days"];?></td>
+	      		<td><?php echo $section["Location"];?></td>
+	      		<td><?php echo $section["Faculty"];?></td>
+	      		<td><?php echo $section["MaxEnroll"];?></td>
+	      		<td><?php echo $section["CurentEnroll"];?></td>
+	      		<td><?php echo $section["Level"];?></td>
+	      		<!--<td><a href="#">View/Edit</a></td>-->
+	      	</tr>
+	    </tbody>
+	   <?php endforeach; ?>
+	</table>
+	
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"/>
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+<script>
+$(document).ready(function() {
+        $('#viewEditSection').DataTable();
+         } );
+
+</script>
