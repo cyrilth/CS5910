@@ -45,6 +45,10 @@ class Users extends CI_Controller
 						redirect('home/index');
 					}
 				}
+				else
+				{
+					echo "There was an error registering this user Please Contact Technical Support at (516) 712 0231";
+				}
 			
 			}
 	}

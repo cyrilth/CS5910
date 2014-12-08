@@ -75,7 +75,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo base_url(); ?>users/register">Add User</a></li>            
-                  <li><a href="<?php echo base_url(); ?>admin_register/createSchedule">View/Edit User</a></li>
+                  <li><a href="<?php echo base_url(); ?>admin_register/viewEditUser">View/Edit User</a></li>
                 </ul>
               </li>
               <?php endif;?>

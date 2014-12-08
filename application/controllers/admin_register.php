@@ -312,4 +312,31 @@ class admin_register extends CI_Controller
 			$this->viewEditSchedule($result->row(0)->SemesterCode,$dataFlash);
 		}
 	}
+	
+	public function viewEditUser($pastRole = "0")
+	{
+		if($this->input->post('role'))
+		{
+			$role = $this->input->post('role');
+			$data['userRole']= $role;
+			$data['userInfo'] = $this->User_model->getUserInfo($role);
+		}
+		$data['pastRole']=$pastRole;
+		$data['main_content'] = 'users/viewEditUser';
+		$this->load->view('Layouts/main',$data);
+	}
+	
+	public function editUser($id = 0,$role)
+	{
+		
+		$data['userInfo']= $this->User_model->userInfo($id);
+		if($role = "Student")
+		{
+			$data['userRole'] = $role;
+			$data['studentInfo'] = $this->User_model->studentInfo($id);
+		}
+		$data['id']=$id;
+		$data['main_content'] = 'users/editUser';
+		$this->load->view('Layouts/main',$data);
+	}
 }

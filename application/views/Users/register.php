@@ -198,10 +198,7 @@
 				<p>Select Major: </p> 
 				<?php
 					$options = array(
-									 'Guest' 	=> "Guest",
-									 'Student' 	=> "Student",
-									 'Faculty'	=> "Faculty",
-									 'Admin' 	=> "Admin"
+									 
 									);
 					$selected = $this->input->post('major');
 					echo form_dropdown('major',$options,$selected,'id="major"');

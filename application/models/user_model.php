@@ -29,9 +29,82 @@
 					'Role'		 =>	$role
 					
 					);
+			
+			$insert = $this->db->insert('users', $data);
+			
+			 if($insert)
+			 {
+			 	$username = $this->input->post('username');
+				if($data["Role"] == "Student")
+				{
 					
-			 $insert = $this->db->insert('users', $data);
-			 return $insert;
+					$student = $this->create_student($username);
+					return $student;
+				}	
+			 	else if($data["Role"] == "Faculty")
+				{
+					$faculty = $this->create_faculty($username);
+					return $faculty;
+				}
+				else if($data["Role"] == "Admin")
+				{
+					$admin = $this->create_admin($username);
+					return $admin;
+				}
+				else if($data["Role"] == "Guest")
+				{
+					 return $insert;	
+				}
+				else
+				{
+					return FALSE;
+				}	
+			 }
+			 else
+			 {
+			 	return $insert;
+			 }
+			 	
+		}
+		
+		public function create_student($username)
+		{
+			$this->db->where('username',$username);
+			$query = $this->db->get('users');
+			$data = array(
+							'StudentID' => $query->row(0)->ID,
+							'DepartmentCode' => $this->input->post('DepartmentCode'),
+							'major1' => $this->input->post('major'),
+							'Hold' => $this->input->post('hold')
+						);
+						
+			$insert = $this->db->insert('student', $data);
+			return $insert;
+		}
+		
+		public function create_faculty($username)
+		{
+			$this->db->where('username',$username);
+			$query = $this->db->get('users');
+			$data = array(
+							'facultyID' => $query->row(0)->ID,
+							'DepartmentCode' => $this->input->post('DepartmentCode')
+						);
+						
+			$insert = $this->db->insert('faculty', $data);
+			return $insert;
+		}
+		
+		public function create_admin($username)
+		{
+			$this->db->where('username',$username);
+			$query = $this->db->get('users');
+			$data = array(
+							'AdminID' => $query->row(0)->ID
+						);
+						
+			$insert = $this->db->insert('admins', $data);
+			return $insert;
 		}
 		
 		
@@ -54,6 +127,27 @@
 			{
 				return false; 	
 			}
+		}
+		
+		public function getUserInfo($role)
+		{
+			$this->db->where('Role',$role);
+			$query = $this->db->get('users');
+			return $query->result();
+		}
+		
+		public function userInfo($id = 0)
+		{
+			$this->db->where('ID',$id);
+			$query = $this->db->get('users');
+			return $query->row(0);
+		}
+		
+		public function studentInfo($id)
+		{
+			$this->db->where('StudentID',$id);
+			$query = $this->db->get('student');
+			return $query->row(0);
 		}
 }
 ?>
