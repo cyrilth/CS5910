@@ -6,3 +6,8 @@ users.ID <> admins.AdminID
 
 SELECT users.First_Name, users.Last_Name, faculty.facultyID, faculty.DepartmentCode 
 From users  INNER JOIN faculty on users.ID = faculty.facultyID
+
+
+SELECT * FROM sections NATURAL JOIN registration ON sections.CRN=registration.CRN
+
+SELECT * FROM sections NATURAL JOIN registration where sections.CRN=7

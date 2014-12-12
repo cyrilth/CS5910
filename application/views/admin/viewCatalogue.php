@@ -4,7 +4,7 @@
 	
 	<thead>
 		<tr>
-			<th>CRN</th>
+			<th>Course ID</th>
 			<th>Course Number</th>
 			<th>Department Code</th>
 			<th>Course Title</th>
@@ -19,7 +19,7 @@
 	<tbody>
 		<?php foreach($allCourse as $course) : ?>
 		<tr>
-			<td><?php echo $course->CRN;?></td>
+			<td><?php echo $course->CourseID;?></td>
 			<td><?php echo $course->CourseNum;?></td>
 			<td><?php echo $course->DepartmentCode;?></td>
 			<td><?php echo $course->CourseTitle;?></td>
@@ -27,7 +27,7 @@
 			<td><?php if($course->Prereq1==0){echo "None";}else{echo $course->Prereq1;}?></td>
 			<td><?php if($course->Prereq2==0){echo "None";}else{echo $course->Prereq2;}?></td>
 			<td><?php if($course->Prereq3==0){echo "None";}else{echo $course->Prereq3;}?></td>
-			<td><a href="<?php echo base_url();?>admin_register/editCourse/<?php echo $course->CRN;?>">View/Edit</a></td>
+			<td><a href="<?php echo base_url();?>admin_register/editCourse/<?php echo $course->CourseID;?>">View/Edit</a></td>
 			
 		</tr>
 		<?php endforeach; ?>

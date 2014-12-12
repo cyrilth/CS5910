@@ -120,12 +120,19 @@
 			
 			if($result->num_rows()== 1)
 			{
-				$userInfo = array('id' => $result->row(0)->ID, 'role' => $result->row(0)->Role);	
-				return $userInfo;
+				if($result->row(0)->accountStatus == "activated")
+				{
+					$userInfo = array('id' => $result->row(0)->ID, 'role' => $result->row(0)->Role);	
+					return $userInfo;				
+				}
+				else
+				{
+					return FALSE;
+				}
 			}
 			else
 			{
-				return false; 	
+				return FALSE; 	
 			}
 		}
 		

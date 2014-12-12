@@ -76,6 +76,32 @@
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo base_url(); ?>users/register">Add User</a></li>            
                   <li><a href="<?php echo base_url(); ?>admin_register/viewEditUser">View/Edit User</a></li>
+                  <li><a href="<?php echo base_url(); ?>admin_register/viewEditUser">Over Ride Student Schedule</a></li>
+                </ul>
+              </li>
+              <?php endif;?>
+              <?php if($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Student'): ?>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Registration
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewYourSchedule">View Your Schedule</a></li>           
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewSchedule">View Course Listing</a></li>
+                  <li><a href="<?php echo base_url(); ?>studentCon/addClass">Add/Delete Class</a></li>
+                </ul>
+              </li>
+              <?php endif;?>
+              <?php if($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Faculty'): ?>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Class Management
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>admin_register/addCourse">View Class Roster</a></li>           
+                  <li><a href="<?php echo base_url(); ?>admin_register/viewCatalogue">Grading</a></li>
                 </ul>
               </li>
               <?php endif;?>

@@ -7,7 +7,7 @@
  <?php endif; ?>
  
  <?php if($this->session->flashdata('login_failed')): ?>
- 	<p class="alert alert-dismissable alert-success"/><?php echo $this->session->flashdata('login_failed'); ?></<p>
+ 	<p class="alert alert-dismissable alert-danger"/><?php echo $this->session->flashdata('login_failed'); ?></<p>
  <?php endif; ?>
  
   <?php if($this->session->flashdata('logged_OUT_success')): ?>

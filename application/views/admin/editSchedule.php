@@ -6,7 +6,7 @@
 <?php echo validation_errors('<p class="alert alert-dismissable alert-danger"/>');
 
 	  $attributes = array('id'=> 'viewEditSchedule','class'=>'form-horizontal'); 
-	  echo form_open('admin_register/editSchedule/' . $getSchedule->SectionID, $attributes); ?>
+	  echo form_open('admin_register/editSchedule/' . $getSchedule->CRN, $attributes); ?>
  
 
 
@@ -106,7 +106,7 @@
 	{
 		if(confirm("Are you Sure?"))
 		{
-			location.href='<?php echo base_url();?>admin_register/deleteSchedule/<?php echo $getSchedule->SectionID;?>';
+			location.href='<?php echo base_url();?>admin_register/deleteSchedule/<?php echo $getSchedule->CRN;?>';
 			
 		}
 		return false;

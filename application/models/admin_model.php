@@ -85,7 +85,7 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 	{
 		$data = array (
 						'SemesterCode' 		=> $this->input->post('semesterID'),
-						'CRN'         		=> $this->input->post('CRN'),
+						'CourseID'         	=> $this->input->post('CourseID'),
 						'TimeSlotID'   		=> $this->input->post('TimeSlotID'),
 						'LocationID'   		=> $this->input->post('LocationID'),
 						'FacultyID'    		=> $this->input->post('Faculty'),
@@ -112,8 +112,8 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 		
 			foreach ($semQuery->result() as $row)
 			{
-				$this->db->where('CRN',$row->CRN);
-				$crnQuery = $this->db->get('course');
+				$this->db->where('CourseID',$row->CourseID);
+				$CourseIDQuery = $this->db->get('course');
 				
 				$this->db->where('TimeSlotID',$row->TimeSlotID);
 				$timeQuery = $this->db->get('timeslot');
@@ -125,10 +125,10 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 				$facultyQuery = $this->db->get('users');
 				
 				$storage[$count++]=array( 
-								'CRN'			 => $crnQuery->row(0)->CRN,
-				 				'CourseNUM'		 => $crnQuery->row(0)->CourseNum,
-				 				'DepartmentCode' =>	$crnQuery->row(0)->DepartmentCode,
-				 				'CourseTitle'	 =>	$crnQuery->row(0)->CourseTitle,
+								'CourseID'		 => $CourseIDQuery->row(0)->CourseID,
+				 				'CourseNUM'		 => $CourseIDQuery->row(0)->CourseNum,
+				 				'DepartmentCode' =>	$CourseIDQuery->row(0)->DepartmentCode,
+				 				'CourseTitle'	 =>	$CourseIDQuery->row(0)->CourseTitle,
 				 				'Time'			 => $timeQuery->row(0)->Time,
 				 				'Days'			 => $timeQuery->row(0)->Days,
 				 				'Location'		 => $locationQuery->row(0)->Building . " Room# " . $locationQuery->row(0)->Room,
@@ -137,7 +137,7 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 				 				'CurentEnroll'	 => $row->CurrentEnroll,
 				 				'Level'			 => $row->Level,
 				 				'Section'		 =>	$row->Section,
-				 				'SectionID'		 => $row->SectionID
+				 				'CRN'		     => $row->CRN
 				 				);
 			}
 		}
@@ -147,27 +147,27 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 	
 	public function getSchedule($id)
 	{
-		$this->db->where('SectionID',$id);
+		$this->db->where('CRN',$id);
 		$result = $this->db->get('sections');
 		return $result->row(0);
 	}
 	
 	public function getDepBySecID($id)
 	{
-		$this->db->where('SectionID',$id);
+		$this->db->where('CRN',$id);
 		$result = $this->db->get('sections');
 		
-		$this->db->where('CRN',$result->row(0)->CRN);
+		$this->db->where('CourseID',$result->row(0)->CourseID);
 		$query = $this->db->get('course');
 		return $query->row(0)->DepartmentCode;
 	}
 	
 	public function getCourseBySecID($secID)
 	{
-		$this->db->where('SectionID',$secID);
+		$this->db->where('CRN',$secID);
 		$result = $this->db->get('sections');
 		
-		$this->db->where('CRN',$result->row(0)->CRN);
+		$this->db->where('CourseID',$result->row(0)->CourseID);
 		$query = $this->db->get('course');
 		return $query->row(0);
 	}
@@ -180,7 +180,7 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 					'MaxEnroll'  => $this->input->post('MaxEnroll'),
 					'FacultyID'  => $this->input->post('Faculty')	
 					);
-		$this->db->where('SectionID',$secID);
+		$this->db->where('CRN',$secID);
 		$update = $this->db->update('sections',$data);
 		
 		return $update;
@@ -188,7 +188,7 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 	
 	public function deleteSchedule($secID)
 	{
-		$this->db->where('SectionID', $secID);
+		$this->db->where('CRN', $secID);
 		$delete = $this->db->delete('sections'); 
 		return $delete;
 	}

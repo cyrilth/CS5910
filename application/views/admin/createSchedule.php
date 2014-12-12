@@ -41,7 +41,7 @@
 	<?php
 		$options = array('0'=>"Please Select a Course");
 		
-		echo form_dropdown('CRN',$options,"",'id="sortCourse"');
+		echo form_dropdown('CourseID',$options,"",'id="sortCourse"');
 	?>
 </p>
 <p>
@@ -147,7 +147,7 @@
 			if(allCourseArray[index].DepartmentCode == selectedDep)
 			{
 				
-				$('<option />', {value: allCourseArray[index].CRN, text: allCourseArray[index].CourseNum + " "  + " " + allCourseArray[index].DepartmentCode + " " + allCourseArray[index].CourseTitle + " CRN# " + allCourseArray[index].CRN }).appendTo(selectionCourseID);
+				$('<option />', {value: allCourseArray[index].CourseID, text: allCourseArray[index].CourseNum + " "  + " " + allCourseArray[index].DepartmentCode + " " + allCourseArray[index].CourseTitle + " Course ID: " + allCourseArray[index].CourseID }).appendTo(selectionCourseID);
 			}
 		});
 		

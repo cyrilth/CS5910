@@ -1,12 +1,8 @@
-<?php if(isset($dataFlash)): ?>
- 	<p class="alert alert-dismissable alert-success"/><?php echo $dataFlash; ?></<p>
-<?php endif; ?>
-<h3>View/Edit Schedule</h3>
+<h3>View Course Listing:</h3>
 <?php echo validation_errors('<p class="alert alert-dismissable alert-danger"/>');
 
 	  $attributes = array('id'=> 'viewEditSchedule','class'=>'form-horizontal'); 
-	  echo form_open('admin_register/viewEditSchedule', $attributes); ?>
-
+	  echo form_open('studentCon/viewSchedule', $attributes); ?>
 <p>
 	<p><strong>Select Semester: </strong></p> 
 	<?php
@@ -17,12 +13,11 @@
 			$options[$row->SemesterCode] = $row->Term . " " . $row->Year; 
 		}
 		
-		echo form_dropdown('semesterID',$options,isset($past) ? $past :$this->input->post("semesterID"));
+		echo form_dropdown('semesterID',$options);
 		
 		
 	?>
 </p>
-
 <p>
 	<?php	  $data = array(
 							'name'   => 'submit',
@@ -36,8 +31,7 @@
 <?php echo form_close();?>
 <?php if(isset($sectionBySem)) : ?>
 <table id="viewEditSection" class="display tableBody" cellspacing="0" width="100%">
-		
-	    <thead>
+	<thead>
 	        <tr>
 	            <th>CRN</th>
 	            <th>Course Number</th>
@@ -51,12 +45,9 @@
 	            <th>Cur Enroll</th>
 	            <th>Level</th>
 	            <th>Section</th>
-	         	<th>View/Edit</th>
 	        </tr>
 	    </thead>
-	   
-	    
-	    <tbody>
+	 <tbody>
 		   <?php foreach($sectionBySem as $section) : ?>
 		      	<tr>
 		      		<td><?php echo $section["CRN"];?></td>
@@ -71,15 +62,11 @@
 		      		<td><?php echo $section["CurentEnroll"];?></td>
 		      		<td><?php echo $section["Level"];?></td>
 		      		<td><?php echo "00".$section["Section"];?></td>
-		      		<td><a href="<?php echo base_url();?>admin_register/editSchedule/<?php echo $section["CRN"];?>">View/Edit</a></td>
 		      	</tr>
 		   <?php endforeach; ?>
 	    </tbody>
-</table>
-
-	
+</table>	
 <?php endif; ?>
-
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"/>
 <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>

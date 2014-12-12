@@ -302,7 +302,7 @@ class admin_register extends CI_Controller
 	
 	public function deleteSchedule($secID)
 	{
-		$this->db->where('SectionID',$secID);
+		$this->db->where('CRN',$secID);
 		$result = $this->db->get('sections');
 		
 	 
@@ -315,12 +315,14 @@ class admin_register extends CI_Controller
 	
 	public function viewEditUser($pastRole = "0")
 	{
+		
 		if($this->input->post('role'))
 		{
 			$role = $this->input->post('role');
 			$data['userRole']= $role;
 			$data['userInfo'] = $this->User_model->getUserInfo($role);
 		}
+		
 		$data['pastRole']=$pastRole;
 		$data['main_content'] = 'users/viewEditUser';
 		$this->load->view('Layouts/main',$data);
@@ -335,6 +337,7 @@ class admin_register extends CI_Controller
 			$data['userRole'] = $role;
 			$data['studentInfo'] = $this->User_model->studentInfo($id);
 		}
+		$data['DepCode'] = $this->admin_model->getDepCode();
 		$data['id']=$id;
 		$data['main_content'] = 'users/editUser';
 		$this->load->view('Layouts/main',$data);

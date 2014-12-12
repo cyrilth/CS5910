@@ -57,8 +57,8 @@ class Users extends CI_Controller
 	
 	public function login()
 	{
-		$this->form_validation->set_rules('username','Username', 'trim|required|min_lenght[5]|xss_clean');
-		$this->form_validation->set_rules('password', 'Password','trim|required|min_length[5]|xss_clean');
+		$this->form_validation->set_rules('username','xss_clean');
+		$this->form_validation->set_rules('password','xss_clean');
 		
 		if($this->form_validation->run() == FALSE)
 		{
@@ -70,8 +70,11 @@ class Users extends CI_Controller
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
 			
+			
 			//Get user id from model
 			$user_id = $this->User_model->login_user($username, $password);
+			
+			
 			
 			//Validate user
 			if($user_id)
@@ -85,6 +88,13 @@ class Users extends CI_Controller
 				
 				//Set session userdata
 				$this->session->set_userdata($user_data);
+				
+				$data = array(
+								'loginAttempts' => 0
+							 );
+						
+				$this->db->where('username',$username);
+				$update = $this->db->update('users',$data);
 				
 				$this->session->set_flashdata('login_success', 'You are now logged in');
 				
@@ -107,9 +117,43 @@ class Users extends CI_Controller
 			}
 			else
 			{
-				//Set ERROR
+				
+				//Login Attempts
+				$this->db->where('username',$username);
+				$usernameCheck = $this->db->get('users');
+				if($usernameCheck->num_rows()>0)
+				{
+					if($usernameCheck->row(0)->accountStatus == "locked")
+					{
+						$this->session->set_flashdata('login_failed', 'Sorry, Your Account has been locked please contact your system admin');
+						redirect('home/index');				
+					}
+					if($usernameCheck->row(0)->loginAttempts <= 2)
+					{
+						$data = array(
+										'loginAttempts' => $usernameCheck->row(0)->loginAttempts + 1
+									  );
+						
+						$this->db->where('username',$username);
+						$update = $this->db->update('users',$data);
+						$this->session->set_flashdata('login_failed', 'Sorry, the login info that you entered is invalid');
+						redirect('home/index');
+					}
+					else
+					{
+						$data = array('accountStatus'=>'locked');
+						$this->db->where('username',$username);
+						$update = $this->db->update('users',$data);
+						$this->session->set_flashdata('login_failed', 'Sorry, Your Account has been locked due to 3 failed login attempts please contact your system admin');
+						redirect('home/index');
+					}
+				}
+				
+				
+					//Set ERROR
 				$this->session->set_flashdata('login_failed', 'Sorry, the login info that you entered is invalid');
 				redirect('home/index');
+				
 			}	
 		}
 	}
