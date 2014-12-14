@@ -156,5 +156,37 @@
 			$query = $this->db->get('student');
 			return $query->row(0);
 		}
+		
+		public function updatePassword()
+		{
+			$enc_password = md5($this->input->post('password'));
+			$data = array("Password"=>$enc_password);
+			
+			$this->db->where('ID',$this->session->userdata('user_id'));
+			$update = $this->db->update('users',$data);
+		
+			return $update;
+		}
+		
+		public function updatePersonalInfo()
+		{
+			$data = array(
+			
+					'username'   => $this->input->post('username'),
+					'email'      => $this->input->post('email'),
+					'first_name' => $this->input->post('first_name'),
+					'last_name'  => $this->input->post('last_name'),
+					'street'     => $this->input->post('street'),
+					'city'       => $this->input->post('city'),
+					'state'      => $this->input->post('state'),
+					'zipcode'    => $this->input->post('zipcode'),
+					'tel'        => $this->input->post('tel')
+					);
+			
+			$this->db->where('ID',$this->session->userdata('user_id'));
+			$update = $this->db->update('users',$data);
+		
+			return $update;
+		}
 }
 ?>

@@ -18,9 +18,6 @@ class admin_model extends CI_Model
 						'DepartmentCode'   	=> $this->input->post('DepartmentCode'),
 						'CourseTitle'   	=> $this->input->post('CourseTitle'),
 						'NumCredits'  	    => $this->input->post('NumCredits'),
-						'Prereq1'   		=> $this->input->post('Prereq1'),
-						'Prereq2'   		=> $this->input->post('Prereq2'),
-						'Prereq3'   		=> $this->input->post('Prereq3')
 					  );
 		
 	
@@ -197,6 +194,114 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID");
 	{
 		$query = $this->db->get('major');
 		return $query->result();
+	}
+	
+	public function getCoursePreq()
+	{
+		$query = $this->db->query("SELECT * FROM course INNER JOIN preq ON course.CourseID=preq.courseID");
+		return $query->result();
+	}
+	
+	public function deletePrereq($courseID,$preReqID)
+	{
+		$this->db->where('courseID', $courseID);
+		$this->db->where('prereqID', $preReqID);
+		$delete = $this->db->delete('preq'); 
+		return $delete;
+	}
+	public function addPreReq()
+	{
+		$data = array(
+						
+						'courseID'   		=> $this->input->post('course'),
+						'prereqID'   	=> $this->input->post('prereq'),
+					  );
+		$insert = $this->db->insert('preq',$data);
+		return $insert;
+	}
+	public function getCourseByID($courseID)
+	{
+		$this->db->where('CourseID',$courseID);
+		$query = $this->db->get('course');
+		return $query->row(0);
+	}
+	
+	public function updateCourse($courseID)
+	{
+		$data = array(
+					
+					'CourseNum'   		=> $this->input->post('CourseNum'),
+					'DepartmentCode'   	=> $this->input->post('DepartmentCode'),
+					'CourseTitle'   	=> $this->input->post('CourseTitle'),
+					'NumCredits'  	    => $this->input->post('NumCredits'),
+				  );
+		$this->db->where('CourseID',$courseID);
+		$update = $this->db->update('course',$data);
+		
+		return $update;
+	}
+	
+	public function deleteCourseByID($courseID)
+	{
+		$this->db->where('CourseID',$courseID );
+		$delete = $this->db->delete('course'); 
+		return $delete;
+	}
+	
+	public function getCoursePreqByName($courseID)
+	{
+		$this->db->where('courseID',$courseID);
+		$preqQuery = $this->db->get('preq');
+		if($preqQuery->num_rows>0)
+		{
+			$count = 0;
+			foreach($preqQuery->result() as $preq)
+			{
+				$this->db->where('CourseID',$preq->prereqID);
+				$preCourseQuery = $this->db->get('course');
+				$storage[$count++]=array("CourseNum"=>$preCourseQuery->row(0)->CourseNum,"DepartmentCode"=>$preCourseQuery->row(0)->DepartmentCode,"CourseTitle"=>$preCourseQuery->row(0)->CourseTitle);
+			}
+			
+			return $storage;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	
+	public function insertStudSeh()
+	{
+		
+		$data = array(
+					'SemesterCode' =>$this->input->post('semesterID'),
+					'studentID'   		=> $this->input->post('studentID'),
+					'CRN'   	=> $this->input->post('crn')
+				  );
+		$insert = $this->db->insert('registration',$data);
+		
+		$this->db->where('CRN', $this->input->post('crn'));
+		$sectUpdate= $this->db->get('sections');
+		
+		$updateDATA = array(
+							"CurrentEnroll" => $sectUpdate->row(0)->CurrentEnroll +1,
+							"RemainingEnroll" => $sectUpdate->row(0)->RemainingEnroll -1
+							);
+		
+		$this->db->where('CRN',$this->input->post('crn'));
+		$updateSection = $this->db->update('sections',$updateDATA);
+		
+		
+		
+		$this->db->where('StudentID',$this->input->post('studentID'));
+		$balanceQuery = $this->db->get('student');		
+		$updateBalance = 1000 + $balanceQuery->row(0)->balances;
+		
+		$data =array("balances"=>$updateBalance);
+		$this->db->where('StudentID',$this->input->post('studentID'));
+		$update = $this->db->update('student',$data);
+		
+		return $update;
 	}
 }
 ?>

@@ -11,3 +11,6 @@ From users  INNER JOIN faculty on users.ID = faculty.facultyID
 SELECT * FROM sections NATURAL JOIN registration ON sections.CRN=registration.CRN
 
 SELECT * FROM sections NATURAL JOIN registration where sections.CRN=7
+
+
+SELECT * FROM course INNER JOIN preq ON course.CourseID=preq.courseID

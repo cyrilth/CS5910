@@ -19,6 +19,10 @@ if(getHostByName(getHostName())== "192.168.1.16")
 {
 	$config['base_url'] = "http://192.168.1.16/Hope/";
 }
+elseif (getHostByName(getHostName())=="137.139.122.78")
+{
+	$config['base_url'] = "http://137.139.122.78/Hope/";
+}
 else 
 {
 	$config['base_url'] = "http://localhost/Hope/";

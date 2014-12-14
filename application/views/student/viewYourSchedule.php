@@ -31,7 +31,7 @@
 <?php echo form_close();?>
 
 
-<table class="table table-bordered table-striped table-striped " id="viewYourSchedule" width="50%" cellspacing="5" cellpadding="5">
+<table class="table table-bordered table-striped table-hover" id="viewYourSchedule" width="50%" cellspacing="5" cellpadding="5">
 <?php if(isset($viewReg)) : ?>
 	<tr>
 		<th>Time/Day</th>

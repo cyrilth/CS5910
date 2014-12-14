@@ -338,4 +338,112 @@ class studentCon extends CI_Controller
 		$data['main_content'] = 'student/viewYourSchedule';
 		$this->load->view('layouts/main',$data);
 	}
+	
+	public function viewPayBalance()
+	{	
+	
+		$this->form_validation->set_rules('balance','Balance','trim|required|numeric|xss_clean');
+	
+		if($this->form_validation->run() == FALSE)
+		{
+			$this->db->where('StudentID',$this->session->userdata('user_id'));
+			$getBalance = $this->db->get('student');
+			$data['getBalance'] = $getBalance->row(0)->balances;
+			$data['main_content'] = 'student/balance';
+			$this->load->view('layouts/main',$data);
+		}
+		else
+		{
+			if($this->student_model->payBalance())
+			{
+				$this->session->set_flashdata('viewPayBalance','Your Payment is Accepted');
+				redirect('studentCon/viewPayBalance');
+			}
+		}
+		
+	}
+	
+	public function viewHolds()
+	{
+		
+		$data['holds']= $this->student_model->getHoldByStudID($this->session->userdata('user_id'));
+		$data['main_content'] = 'student/viewHolds';
+		$this->load->view('layouts/main',$data);
+	}
+	
+	public function viewTranscript()
+	{
+		
+		if($this->input->post('semesterID') == -1)
+		{
+			
+			$data['getAllGrades'] = $this->student_model->getAllGrade($this->session->userdata('user_id'));
+			$data['getGradeTotal']= $this->student_model->getGradeTotal($this->session->userdata('user_id'));
+			
+		}
+		else
+		{
+			$data['semGrade']= $this->student_model->getSemGrade($this->session->userdata('user_id'),$this->input->post('semesterID'));
+			
+		}
+		$data['getSemester'] = $this->admin_model->getAllSemester();
+		$data['main_content'] = 'student/viewTranscript';
+		$this->load->view('layouts/main',$data);
+	}
+	
+	public function viewAdvisor()
+	{
+		$data['getRecord'] = $this->student_model->getAdvisor($this->session->userdata('user_id'));
+		$data['main_content'] = 'student/viewAdvisor';
+		$this->load->view('layouts/main',$data);
+	}
+	
+	public function viewEditMajor()
+	{
+		$this->form_validation->set_rules('major1','1rst Major','callback_duplicateMajorCheck');
+		$this->form_validation->set_rules('major2','1rst Major','callback_checkMajor1Selected');
+	
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['getAllMinor']=$this->student_model->getAllMinor();
+			$data['getAllMajor']=$this->student_model->getAllMajor();
+			
+			$data['major']=$this->student_model->getMajor($this->session->userdata('user_id'));
+			$data['main_content'] = 'student/major';
+			$this->load->view('layouts/main',$data);
+		}
+		else
+		{
+			if($this->student_model->updateMajor($this->session->userdata('user_id')))
+			{
+				$this->session->set_flashdata('major','Your Major Has Been Successfully Updated');
+				redirect('studentCon/viewEditMajor');
+			}
+		}
+	}
+	
+	public function duplicateMajorCheck($major1)
+	{
+		if($major1 == $this->input->post('major2'))
+		{
+			$this->form_validation->set_message('duplicateMajorCheck','Duplicate Major');
+			return FALSE;
+		} 
+		else
+		{
+			return TRUE;
+		}
+	}
+	public function checkMajor1Selected()
+	{
+		if($this->input->post('major1') == 1)
+		{
+			$this->form_validation->set_message('checkMajor1Selected','Please Select Your First Major');
+			return FALSE;
+		} 
+		else
+		{
+			return TRUE;
+		}
+	}
 }

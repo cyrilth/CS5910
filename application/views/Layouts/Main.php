@@ -55,6 +55,7 @@
               	<ul class="dropdown-menu">
               		<li><a href="<?php echo base_url(); ?>admin_register/addCourse">Add Course</a></li>						
               		<li><a href="<?php echo base_url(); ?>admin_register/viewCatalogue">View/Edit Course </a></li>
+                  <li><a href="<?php echo base_url(); ?>admin_register/prereq">Prerequisit Management</a></li>
               	</ul>
               </li>
               <li class="dropdown">
@@ -76,7 +77,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo base_url(); ?>users/register">Add User</a></li>            
                   <li><a href="<?php echo base_url(); ?>admin_register/viewEditUser">View/Edit User</a></li>
-                  <li><a href="<?php echo base_url(); ?>admin_register/viewEditUser">Over Ride Student Schedule</a></li>
+                  <li><a href="<?php echo base_url(); ?>admin_register/OverRideStudentSchedule">Over Ride Student Schedule</a></li>
                 </ul>
               </li>
               <?php endif;?>
@@ -87,9 +88,39 @@
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="<?php echo base_url(); ?>studentCon/viewYourSchedule">View Your Schedule</a></li>           
-                  <li><a href="<?php echo base_url(); ?>studentCon/viewSchedule">View Course Listing</a></li>
+                  <li><a href="<?php echo base_url(); ?>common/viewCatalogue">Course Catalogue</a></li>
+                  <li><a href="<?php echo base_url(); ?>common/viewCourseSection">View Course Section</a></li>
                   <li><a href="<?php echo base_url(); ?>studentCon/addClass">Add/Delete Class</a></li>
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewYourSchedule">View Your Schedule</a></li> 
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Account Managment
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewHolds">View Holds</a></li>
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewPayBalance">View/Pay Balance</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Student Record
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewHolds">View Transcript</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Admission
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewEditMajor">Manage Major</a></li>
+                  <li><a href="<?php echo base_url(); ?>studentCon/viewAdvisor">View Advisors</a></li>
                 </ul>
               </li>
               <?php endif;?>
@@ -100,8 +131,26 @@
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="<?php echo base_url(); ?>admin_register/addCourse">View Class Roster</a></li>           
-                  <li><a href="<?php echo base_url(); ?>admin_register/viewCatalogue">Grading</a></li>
+                  <li><a href="<?php echo base_url(); ?>facultyCon/viewClassList">View/Grade Class</a></li>           
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Course Listing
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="<?php echo base_url(); ?>common/viewCatalogue">Course Catalogue</a></li>
+                   <li><a href="<?php echo base_url(); ?>common/viewCourseSection">View Course Section</a></li>            
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Advisement Management
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="<?php echo base_url(); ?>facultyCon/advisementList">View Advisement</a></li>          
                 </ul>
               </li>
               <?php endif;?>

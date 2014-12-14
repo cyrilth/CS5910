@@ -8,3 +8,6 @@ table.dataTable tbody td{
 	text-align: center;
 }
 
+table.table-striped{
+	text-align: center;
+}

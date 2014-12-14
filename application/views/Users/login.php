@@ -20,7 +20,8 @@
 	   	echo form_close();
 	   	
 ?>
-<p><a href="#"><u>View/Edit Your Personal Info.</u></a></p>
+<p><a href="<?php echo base_url();?>users/viewEditPersonalInfo"><u>View/Edit Your Personal Info.</u></a></p>
+<p><a href="<?php echo base_url();?>users/resetPasswordByUser"><u>Reset Password</u></a></p>
 <?php else : ?>
 
 <?php 

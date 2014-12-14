@@ -57,42 +57,6 @@
 	<?php echo form_input($data);?>
 </p>
 
-<!--Prereq1-->
-<p>
-	<?php echo form_label('PreReg. 1rst [Course ID] (Leave Blank if none): '); ?>
-	<?php
-	$data = array(
-				  'name'  => 'Prereq1',
-				  'value' => set_value('Prereq1')
-				  );
-	?>
-	<?php echo form_input($data);?>
-</p>
-
-<!--Prereq2-->
-<p>
-	<?php echo form_label('PreReg. 2nd [Course ID] (Leave Blank if none): '); ?>
-	<?php
-	$data = array(
-				  'name'  => 'Prereq2',
-				  'value' => set_value('Prereq2')
-				  );
-	?>
-	<?php echo form_input($data);?>
-</p>
-
-<!--Prereq3-->
-<p>
-	<?php echo form_label('PreReg. 3rd [Course ID] (Leave Blank if none): '); ?>
-	<?php
-	$data = array(
-				  'name'  => 'Prereq3',
-				  'value' => set_value('Prereq3')
-				  );
-	?>
-	<?php echo form_input($data);?>
-</p>
-
 <p>
 	<?php	  $data = array('name'   => 'submit',
 		  					'class'  => 'btn btn-primary',

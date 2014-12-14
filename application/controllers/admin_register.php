@@ -33,12 +33,9 @@ class admin_register extends CI_Controller
 	
 	public function addCourse_Validation()
 	{
-		$this->form_validation->set_rules('CourseNum','Course Number','trim|required|max_length[3]|min_length[3]|xss_clean');
+		$this->form_validation->set_rules('CourseNum','Course Number','trim|required|max_length[3]|min_length[3]|xss_clean|callback_duplicateCourseCheck');
 		$this->form_validation->set_rules('CourseTitle','Course Title','trim|required|max_length[50]|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('NumCredits','Number of Credits','trim|required|max_length[1]|min_length[1]|xss_clean');
-		$this->form_validation->set_rules('Prereq1','PreReg. 1rst','trim|xss_clean');
-		$this->form_validation->set_rules('Prereq2','PreReg. 2nd','trim|xss_clean');
-		$this->form_validation->set_rules('Prereq3','PreReg. 3rd','trim|xss_clean');
 		
 		if($this->form_validation->run() == FALSE)
 		{
@@ -56,16 +53,88 @@ class admin_register extends CI_Controller
 		}
 	}
 	
+	public function duplicateCourseCheck($courseNum)
+	{
+		$this->db->where('CourseNum',$courseNum);
+		$this->db->where('DepartmentCode',$this->input->post('DepartmentCode'));
+		$result =$this->db->get('course');
+		if($result->num_rows()>0)
+		{
+			$this->form_validation->set_message('duplicateCourseCheck','Duplicate Course');
+			return false;
+		}
+		else{ return TRUE;}
+		
+	}
+	
 	public function viewCatalogue()
 	{
-		$data['allCourse'] = $this->admin_model->getAllCourse();
+		$courselist = $this->admin_model->getAllCourse();
+		
+		$count = 0;
+		$storage = NULL;
+		foreach($courselist as $singleCourse)
+		{
+			$this->db->where('courseID',$singleCourse->CourseID);
+			$preqlist = $this->db->get('preq');
+			$preReqString =""; 
+			if($preqlist->num_rows()>0)
+			{
+					foreach($preqlist->result() as $row)
+					{
+						$this->db->where('CourseID',$row->prereqID);
+						$courseQuery = $this->db->get('course');
+						$preREQ = $courseQuery->row(0)->CourseNum." ".$courseQuery->row(0)->DepartmentCode." ".$courseQuery->row(0)->CourseTitle;
+						$preReqString = $preReqString." ".$preREQ;
+					}
+					$preReqString = $preReqString;
+				
+			}
+			else
+			{
+				$preReqString = "None";
+			}
+			$storage[$count++] =array("CourseID"=>$singleCourse->CourseID, "CourseNum"=>$singleCourse->CourseNum,"DepartmentCode"=>$singleCourse->DepartmentCode,"CourseTitle"=>$singleCourse->CourseTitle,"NumCredits"=>$singleCourse->NumCredits,"PreReq"=> $preReqString);
+			
+		}
+		$data['allCourseWPrereq']= $storage;
 		$data['main_content'] = 'admin/viewCatalogue';
 		$this->load->view('Layouts/main',$data);
 	}
 	
-	public function editCourse($CRN)
+	public function editCourse($courseID)
 	{
-		echo $CRN;
+		$this->form_validation->set_rules('CourseNum','Course Number','trim|required|max_length[3]|min_length[3]|xss_clean');
+		$this->form_validation->set_rules('CourseTitle','Course Title','trim|required|max_length[50]|min_length[2]|xss_clean');
+		$this->form_validation->set_rules('NumCredits','Number of Credits','trim|required|max_length[1]|min_length[1]|xss_clean');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['courseByID']=$this->admin_model->getCourseByID($courseID);
+			$data['courseID']=$courseID;
+			$data['results'] = $this->admin_model->getDepCode();
+			$data['main_content'] = 'admin/editCourse';
+			$this->load->view('Layouts/main',$data);
+		}
+		else
+		{
+			if($this->admin_model->updateCourse($courseID))
+			{
+				$data['courseByID']=$this->admin_model->getCourseByID($courseID);
+				$data['courseID']=$courseID;
+				$data['results'] = $this->admin_model->getDepCode();
+				$this->session->set_flashdata('editCourse','This Course has been Updated');
+				$data['main_content'] = 'admin/editCourse';
+				$this->load->view('Layouts/main',$data);
+			}
+		}
+	}
+	public function deleteCourse($courseID)
+	{
+		if($this->admin_model->deleteCourseByID($courseID))
+		{
+			$this->viewCatalogue();
+		}
 	}
 	
 	public function addViewSemester()
@@ -261,6 +330,9 @@ class admin_register extends CI_Controller
 		$this->form_validation->set_rules('TimeSlotID','Time Slot','callback_location_check|callback_section_check|callback_professor_check|callback_zeroValueSTimeSlot_check');
 		if($this->form_validation->run() == FALSE)
 		{
+			$this->db->where('CRN',$secID);
+			$secQuery = $this->db->get('sections');
+			$data['preReq']=$this->admin_model->getCoursePreqByName($secQuery->row(0)->CourseID);
 			$data['dataflash'] = NULL;
 			$data['DepartmentCode'] = $this->admin_model->getDepBySecID($secID);
 			$data['getAllFaculty']= $this->admin_model->getAllFaculty();
@@ -341,5 +413,104 @@ class admin_register extends CI_Controller
 		$data['id']=$id;
 		$data['main_content'] = 'users/editUser';
 		$this->load->view('Layouts/main',$data);
+	}
+	
+	public function prereq()
+	{
+		$this->form_validation->set_rules('course','Course','callback_duplicatePreReq');
+		if($this->form_validation->run() == FALSE)
+		{
+			$preq= $this->admin_model->getCoursePreq();
+			$count=0;
+			foreach($preq as $row)
+			{
+				$this->db->where('CourseID',$row->prereqID);
+				$getpreName = $this->db->get('course');
+				$storage[$count++]= array(
+											'courseID'=>$row->CourseID,
+											'courseNum'=>$row->CourseNum,
+											'courseDepCode'=>$row->DepartmentCode,
+											'courseTitle'=>$row->CourseTitle,
+											'preqID'=>$getpreName->row(0)->CourseID,
+											'preqCourseNum'=>$getpreName->row(0)->CourseNum,
+											'preqDepCode'=>$getpreName->row(0)->DepartmentCode,
+											'preqCourseTitle'=>$getpreName->row(0)->CourseTitle,
+										  );
+			}
+			$data['getPrereq']=$storage;
+			$data['allCourse'] = $this->admin_model->getAllCourse();
+			$data['main_content'] = 'admin/prereq';
+			$this->load->view('Layouts/main',$data);
+		}
+		else
+		{
+			if($this->admin_model->addPreReq())
+			{
+				$preq= $this->admin_model->getCoursePreq();
+				$count=0;
+				foreach($preq as $row)
+				{
+					$this->db->where('CourseID',$row->prereqID);
+					$getpreName = $this->db->get('course');
+					$storage[$count++]= array(
+												'courseID'=>$row->CourseID,
+												'courseNum'=>$row->CourseNum,
+												'courseDepCode'=>$row->DepartmentCode,
+												'courseTitle'=>$row->CourseTitle,
+												'preqID'=>$getpreName->row(0)->CourseID,
+												'preqCourseNum'=>$getpreName->row(0)->CourseNum,
+												'preqDepCode'=>$getpreName->row(0)->DepartmentCode,
+												'preqCourseTitle'=>$getpreName->row(0)->CourseTitle,
+											  );
+				}
+				$data['getPrereq']=$storage;
+				$data['allCourse'] = $this->admin_model->getAllCourse();
+				$data['main_content'] = 'admin/prereq';
+				$this->load->view('Layouts/main',$data);
+			}
+		}
+	}
+	
+	public function duplicatePreReq()
+	{
+		$this->db->where('courseID', $this->input->post('course'));
+		$this->db->where('prereqID', $this->input->post('prereq'));
+		$result = $this->db->get('preq');
+		if($result->num_rows()>0)
+		{
+			$this->form_validation->set_message('duplicatePreReq','Duplicate PreReq');
+			return false;
+		}
+		else{ return TRUE;}
+	}
+	
+	public function deletePrereq($courseID,$preReqID)
+	{
+		if($this->admin_model->deletePrereq($courseID,$preReqID))
+		{
+			$this->prereq();
+		}
+	}
+	
+	public function OverRideStudentSchedule()
+	{
+		
+		$this->form_validation->set_rules('studentID','Student ID','trim|required|numeric|xss_clean');
+		$this->form_validation->set_rules('crn','CRN','trim|required|numeric|xss_clean');
+	
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['getSemester'] = $this->admin_model->getAllSemester();
+			$data['main_content'] = 'admin/OverRideStudentSchedule';
+			$this->load->view('layouts/main',$data);
+		}
+		else
+		{
+			if($this->admin_model->insertStudSeh())
+			{
+				$this->session->set_flashdata('OverRideStudentSchedule','The Course Section Has been Added to Student Schedule');
+				redirect('admin_register/OverRideStudentSchedule');
+			}
+		}
 	}
 }

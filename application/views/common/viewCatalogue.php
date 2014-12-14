@@ -8,7 +8,6 @@
 			<th>Course Title</th>
 			<th>Number of Credits</th>
 			<th>PreReq</th>
-			<th>View/Edit</th>
 		</tr>
 	</thead>
 	<?php if(isset($allCourseWPrereq)) : ?>
@@ -20,7 +19,6 @@
 			<td><?php echo $course['CourseTitle'];?></td>
 			<td><?php echo $course['NumCredits'];?></td>		
 			<td><?php echo $course['PreReq'];?></td>
-			<td><a href="<?php echo base_url();?>admin_register/editCourse/<?php echo $course['CourseID'];?>">Edit/Delete</a></td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>

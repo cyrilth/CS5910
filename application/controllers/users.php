@@ -14,12 +14,12 @@ class Users extends CI_Controller
 		$this->form_validation->set_rules('password','Password','trim|required|max_length[20]|min_length[5]|xss_clean');
 		$this->form_validation->set_rules('confirm_password','Confirm Password','trim|required|max_length[20]|min_length[5]|xss_clean|matches[password]');
 		$this->form_validation->set_rules('dob','Date Of Birth','trim|required|xss_clean');
-		$this->form_validation->set_rules('ssn','SSN','trim|required|max_length[9]|min_length[9]|xss_clean|is_unique[users.ssn]');
+/*		$this->form_validation->set_rules('ssn','SSN','trim|required|max_length[9]|min_length[9]|xss_clean|is_unique[users.ssn]');
 		$this->form_validation->set_rules('street','Street Address','trim|required|max_length[200]|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('city','City','trim|required|max_length[100]|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('state','State','trim|required|max_length[2]|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('zipcode','Zipcode','trim|required|max_length[5]|min_length[5]|xss_clean');
-		$this->form_validation->set_rules('tel','Telphone','trim|required|max_length[10]|min_length[10]|xss_clean');
+		$this->form_validation->set_rules('tel','Telphone','trim|required|max_length[10]|min_length[10]|xss_clean');*/
 		
 		if($this->form_validation->run() == FALSE)
 			{
@@ -100,14 +100,14 @@ class Users extends CI_Controller
 				
 				switch($user_data['role'])
 				{
-					case "admin" 	:
+					case "Admin" 	:
 						redirect('admin_register/index');
 						break;
-					case "student" 	:
-						echo("Student Logged in Successfully");
+					case "Student" 	:
+						redirect('studentCon/index');
 						break;
-					case "faculty" 	:
-						echo("faculty Logged in Successfully");
+					case "Faculty" 	:
+						redirect('facultyCon/index');
 						break;
 					default:
 						redirect('home/index');
@@ -172,6 +172,80 @@ class Users extends CI_Controller
 		$this->session->set_userdata($tempUser);
 		$this->session->set_flashdata('logged_OUT_success', ', you are now logged Out');
 		redirect('home/index');
+	}
+	
+	public function resetPasswordByUser()
+	{
+		
+		if(!($this->session->userdata('logged_in')))
+		{
+			$this->session->set_flashdata('noaccess','Sorry you are not logged in with appropriate access');
+			redirect('home/index');
+		}
+		else
+		{
+			$this->form_validation->set_rules('oldpassword','Old Password','trim|required|max_length[20]|min_length[5]|xss_clean|callback_oldPasswordCheck');
+			$this->form_validation->set_rules('password','Password','trim|required|max_length[20]|min_length[5]|xss_clean');
+			$this->form_validation->set_rules('confirm_password','Confirm Password','trim|required|max_length[20]|min_length[5]|xss_clean|matches[password]');
+			if($this->form_validation->run() == FALSE)
+			{
+				$data['main_content'] = 'users/resetPassword';
+				$this->load->view('layouts/main',$data);
+			}
+			else
+			{
+				if($this->User_model->updatePassword())
+				{
+					$this->session->set_flashdata('changePassword','The password has been updated');
+					redirect('users/resetPasswordByUser');
+				}
+			}
+		}	
+	}
+	
+	public function oldPasswordCheck($oldpassword)
+	{
+		$enc_password = md5($oldpassword);
+		$userQuery=$this->User_model->userInfo($this->session->userdata('user_id'));
+		if($enc_password == $userQuery->Password)
+		{
+			return TRUE;
+		}
+		else
+		{
+			$this->form_validation->set_message('oldPasswordCheck','Your Old Password Did not match');
+			return false;
+		}
+		
+	}
+	
+	public function viewEditPersonalInfo()
+	{
+		$this->form_validation->set_rules('first_name','First Name','trim|required|max_length[50]|min_length[2]|xss_clean');
+		$this->form_validation->set_rules('last_name','Last Name','trim|required|max_length[50]|min_length[2]|xss_clean');
+		$this->form_validation->set_rules('email','Email','trim|required|max_length[100]|min_length[5]|xss_clean|valid_email');
+		$this->form_validation->set_rules('username','Username','trim|required|max_length[20]|min_length[5]|xss_clean');
+		$this->form_validation->set_rules('street','Street Address','trim|required|max_length[200]|min_length[2]|xss_clean');
+		$this->form_validation->set_rules('city','City','trim|required|max_length[100]|min_length[2]|xss_clean');
+		$this->form_validation->set_rules('state','State','trim|required|max_length[2]|min_length[2]|xss_clean');
+		$this->form_validation->set_rules('zipcode','Zipcode','trim|required|max_length[5]|min_length[5]|xss_clean');
+		$this->form_validation->set_rules('tel','Telphone','trim|required|max_length[10]|min_length[10]|xss_clean');
+		if($this->form_validation->run() == FALSE)
+			{
+				
+				$data['userInfo'] = $this->User_model->userInfo($this->session->userdata('user_id'));
+				$data['main_content'] = 'users/viewEditPersonalInfo';
+				$this->load->view('layouts/main',$data);
+			}
+			else
+			{
+				if($this->User_model->updatePersonalInfo())
+				{
+					$this->session->set_flashdata('viewEditPersonalInfo','Your Account has been Updated');
+					redirect('users/viewEditPersonalInfo');
+				}
+			}
+		
 	}
 	
 }
